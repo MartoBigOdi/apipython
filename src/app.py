@@ -1,7 +1,8 @@
 # imports
-from flask import Flask, request
+from flask import Flask, jsonify, request, Response
 from flask_pymongo import PyMongo
 from werkzeug.security import generate_password_hash, check_password_hash
+from bson import ObjectId, json_util
 
 
 # config
@@ -34,8 +35,40 @@ def create_user():
         print(response)
         return response
     else:
-         {'message': 'Data user not received'}
+        return not_found() # utilizamos la funcion que creamos para manejar el err / Si los recursos no llegan o falto algo manejamos asi el err
+    
     return {'message': 'Data user received'}
+    
+    
+@app.errorhandler(404)
+def not_found(error=None):
+    response = jsonify({
+        'message': 'Resource not found: ' + request.url,
+        'status': 404
+    })
+    response.status_code = 404
+    return response 
+
+
+@app.route('/users', methods=['GET'])
+def get_users():
+    users = mongo.db.users.find() # querie de mongo para obtener los datos de esa coleccion, devuelve en formato bson
+    # devolvemos la lista en formato json con la libreria selecionado
+    response = json_util.dumps(users) # utilizamos el metodo dump que convierte en json y lo almacenamos en una variable llamada response
+    # utilizamos Response de flask para advertir al cliente el tipo de dato que recibe, devolvemos una respose mas elaborada
+    return Response(response, mimetype='application/json')
+
+
+@app.route('/users/<id>', methods=['GET'])
+def get_user(id):
+    user = mongo.db.users.find_one({
+        '_id': ObjectId(id) # convertimos en ObjectId el id que nos estan pasando, dado que recibimos un string
+    })
+    if user: 
+        response = json_util.dumps(user)
+        return Response(response, mimetype='application/json')
+    else:
+        return {'message': 'User id: ' + id + ' Not Found'} # como la response de users, la volvemos mas elaborada la response
     
     
 # server

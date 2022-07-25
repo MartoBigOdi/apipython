@@ -1,5 +1,3 @@
-# Proyecto de practica de Python (is 👍) con MongoDB y Flask 🌶
-
-# No olvidarse de crear la variable de entorno
+# Proyecto de practica de Python 🐍 con MongoDB y Flask 🌶
 
 # [path to python installation folder]/python.exe -m venv env

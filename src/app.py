@@ -107,12 +107,12 @@ def update_user(id):
 
     if username and email and password:
         hashed_password = generate_password_hash(password)
-        mongo.db.users.update_one({'_id': ObjectId(id)}, {'$inc': {
+        mongo.db.users.update_one({'_id': ObjectId(id)}, {'$set': {
             'username': username,
             'password': hashed_password,
             'email': email
         }})
-        response = jsonify({message: 'User' + id + ' was updated successfully'})
+        response = jsonify({'message': 'User' + id + ' was updated successfully'})
         return response
 
 

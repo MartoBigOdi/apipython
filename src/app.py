@@ -1,4 +1,5 @@
 # imports
+from email import message
 from flask import Flask, jsonify, request, Response
 from flask_pymongo import PyMongo
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -97,9 +98,22 @@ def delete_user(id):
         return not_found()
 
 
+@app.route('/users/<id>', methods=['PUT'])
+def update_user(id):
+    # receiving data
+    username = request.json['username']
+    password = request.json['password']
+    email = request.json['email']
 
-# @app.route('/users/<id>', methods=['PUT'])
-
+    if username and email and password:
+        hashed_password = generate_password_hash(password)
+        mongo.db.users.update_one({'_id': ObjectId(id)}, {'$inc': {
+            'username': username,
+            'password': hashed_password,
+            'email': email
+        }})
+        response = jsonify({message: 'User' + id + ' was updated successfully'})
+        return response
 
 
 

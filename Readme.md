@@ -2,3 +2,5 @@
 
 # Conectar MongoDB previo a levantar servidor 
 # [path to python installation folder]/python.exe -m venv env
+
+# Levantamos el server: python src/app.py 
